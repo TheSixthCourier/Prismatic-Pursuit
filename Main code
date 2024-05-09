@@ -7,6 +7,8 @@ clock = pygame.time.Clock()
 
 
 background = pygame.image.load("Background.png")
+
+
 #Initializations above
 
 # xpos = 0
@@ -154,14 +156,16 @@ while running:
     
 #fisics
     move_player()
-        
+    
     for i in range(len(rainstorm)):
         rainstorm[i].move()
     for i in range(len(prismatic)):
         prismatic[i].move()
 #Render
     screen.fill((10, 10, 20))
-    screen.blit(background, (0 * 50, 0 * 2))
+    screen.blit(background, (0, 0), (0, 0, 1800 * 2, 800))
+                                                    #X,     Y,   X,   Y
+    pygame.draw.rect(screen, (25, 14, 10), (-270 + offset, 550, 2200, 300), )
     
     for i in range(len(rainstorm)):
         rainstorm[i].draw()
@@ -174,8 +178,6 @@ while running:
     draw_platforms()
     pygame.draw.rect(screen, (random.randrange(60, 255), random.randrange(60, 255), random.randrange(60, 255)), (player[0], player[1], 50, 50))
 
-                                        #X,           Y,   X,   Y
-    pygame.draw.rect(screen, (25, 14, 10), (-270 + offset, 550, 1500, 300))
 
     pygame.display.flip()
     
