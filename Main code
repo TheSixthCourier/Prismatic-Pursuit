@@ -111,12 +111,11 @@ class Prismatic:
         self.xpos = x
         self.ypos = -y
     def move(self):
-        self.xpos += random.randrange(-35, 0) # Left & Right $First number is left, second is right
-        self.ypos -= random.randrange(0, 1) #Up & Down
+        self.xpos += random.randrange(-35, 0) # Left & Right #First number is left, second is right
+        self.ypos -= random.randrange(-8, 10) #Up & Down
         if self.xpos < 0:
-            self.xpos = player[0] - offset #reset rain
-        if self.ypos < player[3] - offset or self.ypos > player[2] - offset:
-            self.ypos = player[3] + 500
+            self.xpos = player[0] - offset #reset
+            self.ypos = player[1] + 25#random.randrange (player[1], player[1])
         
     def draw(self):
         pygame.draw.rect(screen, (random.randrange(80, 255), random.randrange(80, 255), random.randrange(80, 255)), (self.xpos, self.ypos, 19, 3))
@@ -173,7 +172,7 @@ while running:
     draw_clouds()
     draw_rocks()
     draw_platforms()
-    pygame.draw.rect(screen, (70, 100, 70), (player[0], player[1], 50, 50))
+    pygame.draw.rect(screen, (random.randrange(60, 255), random.randrange(60, 255), random.randrange(60, 255)), (player[0], player[1], 50, 50))
 
                                         #X,           Y,   X,   Y
     pygame.draw.rect(screen, (25, 14, 10), (-270 + offset, 550, 1500, 300))
