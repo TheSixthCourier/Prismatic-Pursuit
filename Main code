@@ -18,7 +18,7 @@ background = pygame.image.load("Background.png")
 xPositions = []
 yPositions = []
 
-
+#         #x   #y  #xv #yv
 player = [100, 500, 0, 0]
 isOnGround = False
 offset = 0
@@ -57,17 +57,13 @@ def move_player():
     if  player[1]+50 >550:
         player[1] = 550-50
         isOnGround = True
-        player[3] = 0
 
 #___________________________________________________________________________________________________________
 def draw_clouds():
     global offset
     for x in range(100, 800, 300): #Number of clouds
         for i in range(3):
-            pygame.draw.circle(screen, (100, 100, 100), (x + offset, 100), 40)
-            pygame.draw.circle(screen, (100, 100, 100), (x - 50 + offset, 125), 40)
-            pygame.draw.circle(screen, (100, 100, 100), (x + 50 + offset, 125), 40)
-        pygame.draw.rect(screen, (100, 100, 100), (x - 50 + offset, 100, 100, 65))
+            pygame.draw.rect(screen, (100, 100, 100), (x - 50 + offset, 100, 100, 65))
 
 
 
@@ -106,15 +102,30 @@ class Rainstorm:
             self.ypos = random.randrange(-10, 20) #reset rain
     def draw(self):
         pygame.draw.rect(screen, (240, 240, 255), (self.xpos, self.ypos, 2, 5))
+        
+#___________________________________________________________________________________________________________
+class Gunfire:
+    def __init__(self, x, y):
+        self.xpos = 1050
+        self.ypos = 350
+    def move(self):
+        self.xpos += random.randrange(-1, 2) # Left & Right #1050
+        self.ypos -= random.randrange(-24, 0) #Up & Down #350
+        if self.ypos > 500:
+            self.ypos = random.randrange(350, 351) #reset bullets
+    def draw(self):
+        pygame.draw.rect(screen, (255, random.randrange(165, 240), 0), (self.xpos, self.ypos, 2, 35))
+        pygame.draw.circle(screen, (255, 234, 0), (self.xpos + 1, self.ypos + 35), 3)
+
 #___________________________________________________________________________________________________________
 
 class Prismatic:
     def __init__(self, x, y):
-        self.xpos = x
-        self.ypos = -y
+        self.xpos = 100
+        self.ypos = 500
     def move(self):
         self.xpos += random.randrange(-35, 0) # Left & Right #First number is left, second is right
-        self.ypos -= random.randrange(-8, 10) #Up & Down
+        self.ypos -= random.randrange(-8, 8) #Up & Down
         if self.xpos < 0:
             self.xpos = player[0] - offset #reset
             self.ypos = player[1] + 25#random.randrange (player[1], player[1])
@@ -124,7 +135,16 @@ class Prismatic:
         pygame.draw.circle(screen, (random.randrange(150, 255), random.randrange(150, 255), random.randrange(150, 255)), (self.xpos + 22, self.ypos + 1.5), 2)
 
 #___________________________________________________________________________________________________________
- 
+
+#___________________________________________________________________________________________________________
+
+
+
+#___________________________________________________________________________________________________________
+
+
+
+#___________________________________________________________________________________________________________
 
 
 prismatic = []
@@ -135,13 +155,17 @@ rainstorm = []
 for i in range(1000): #Amount
     rainstorm.append(Rainstorm(random.randrange(0, 1800), random.randrange(-1000, 0)))
     
+gunfire = []
+for i in range(30): #Amount
+    gunfire.append(Gunfire(random.randrange(0, 1800), random.randrange(-1000, 0)))
+    
 #player[2], Player[3]
     
     
 #input & game loop
 running = True
 while running:
-    clock.tick(60)
+    clock.tick(120)
    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -150,9 +174,9 @@ while running:
     keys = pygame.key.get_pressed()
     
     #Render helper
-#    if event.type == pygame.MOUSEMOTION: #check if mouse moved
-   #     mousePos = event.pos #refreshes mouse position
-     #   print("mouse position: (",mousePos[0]," , ",mousePos[1], ")")
+    #if event.type == pygame.MOUSEMOTION: #check if mouse moved
+        #mousePos = event.pos #refreshes mouse position
+        #print("mouse position: (",mousePos[0]," , ",mousePos[1], ")")
     
 #fisics
     move_player()
@@ -161,20 +185,26 @@ while running:
         rainstorm[i].move()
     for i in range(len(prismatic)):
         prismatic[i].move()
+    for i in range(len(gunfire)):
+        gunfire[i].move()
 #Render
     screen.fill((10, 10, 20))
-    screen.blit(background, (0, 0), (0, 0, 1800 * 2, 800))
+    screen.blit(background, (0, 0))
+    #screen.blit(background, (900, 0))
+
                                                     #X,     Y,   X,   Y
     pygame.draw.rect(screen, (25, 14, 10), (-270 + offset, 550, 2200, 300), )
     
     for i in range(len(rainstorm)):
         rainstorm[i].draw()
         
+    #for i in range(len(gunfire)):
+        #gunfire[i].draw()
+        
     for i in range(len(prismatic)):
         prismatic[i].draw()
     
     draw_clouds()
-    draw_rocks()
     draw_platforms()
     pygame.draw.rect(screen, (random.randrange(60, 255), random.randrange(60, 255), random.randrange(60, 255)), (player[0], player[1], 50, 50))
 
