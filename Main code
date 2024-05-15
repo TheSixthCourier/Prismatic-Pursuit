@@ -136,7 +136,24 @@ class Prismatic:
         pygame.draw.circle(screen, (random.randrange(150, 255), random.randrange(150, 255), random.randrange(150, 255)), (self.xpos + 22, self.ypos + 1.5), 2)
 
 #___________________________________________________________________________________________________________
-
+class Recharge:
+    def __init__(self, xpos, ypos):
+        self.xpos = xpos
+        self.ypos = ypos
+        self.isAlive = True
+    def collide(self, player, offset):
+        if self.isAlive:
+            if player[0] + offset > self.xpos:
+                if player[0] + offset < self.xpos + 40:
+                    if player[1] + offset < self.ypos + 40:
+                        if player[1] + offset > self.ypos:
+                            print("RECHARGED!!")
+                            stamina += 200
+                            self.isAlive = False
+                            return False
+    def draw(self):
+        if self.isAlive == True: #only draw alive aliens
+            pygame.draw.rect(screen, (random.randrange(0, 250), random.randrange(0, 250), random.randrange(0, 250)), (self.xpos, self.ypos, 20, 20))
 #___________________________________________________________________________________________________________
 
 
@@ -147,7 +164,11 @@ class Prismatic:
 
 #___________________________________________________________________________________________________________
 
-
+recharge = []
+for i in range (5):
+    for j in range (10):
+        recharge.append(Recharge(j*60+50, i*50+50))
+        
 prismatic = []
 for i in range(200): #Amount
     prismatic.append(Prismatic(random.randrange(0, 1800), random.randrange(-550, -500)))
@@ -168,7 +189,7 @@ running = True
 
 while running:
     clock.tick(120)
-    stamina -= 1
+    stamina -= .5
     print(stamina)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -194,6 +215,10 @@ while running:
         prismatic[i].move()
     for i in range(len(gunfire)):
         gunfire[i].move()
+
+    A1 = Recharge(400, 900)
+
+
 #Render
     screen.fill((10, 10, 20))
     screen.blit(background, (0, 0))
@@ -205,7 +230,10 @@ while running:
     
     for i in range(len(rainstorm)):
         rainstorm[i].draw()
-    
+        
+    for i in range (len(recharge)):
+        recharge[i].draw()
+        
     #for i in range(len(gunfire)):
         #gunfire[i].draw()
         
