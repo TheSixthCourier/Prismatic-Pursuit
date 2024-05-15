@@ -7,7 +7,9 @@ clock = pygame.time.Clock()
 
 
 background = pygame.image.load("Background.png")
+train = pygame.image.load("train.png")
 
+stamina = 600
 
 #Initializations above
 
@@ -29,7 +31,6 @@ platforms = [(500, 400), (700, 300)]
 def move_player():
     global isOnGround
     global offset
-    print(offset)
     if keys[pygame.K_LEFT]:
         player[2] = -10
     elif keys[pygame.K_RIGHT]:
@@ -47,17 +48,16 @@ def move_player():
 
     if player[0] < 0 or player[0] > 1800:
         player[0] = 0
-        print("Can't go that way.")
         
 
     player[0]+=player[2]
     player[1]+=player[3]
-    print(player[0],player[1])
      #COLLISION
     if  player[1]+50 >550:
         player[1] = 550-50
         isOnGround = True
-#def Health():
+        
+
     
 #___________________________________________________________________________________________________________
 def draw_clouds():
@@ -71,7 +71,7 @@ def draw_clouds():
 #___________________________________________________________________________________________________________
 def draw_rocks():
     global offset
-    for x in range(100, 800, 300): #Number of clouds
+    for x in range(100, 200, 300): #Number of clouds
         for i in range(3):
             pygame.draw.rect(screen, (10, 10, 10), (x-25 + offset, 350, 50, 550))
         pygame.draw.circle(screen, (50, 50, 50), (x + offset, 325), 40)
@@ -165,9 +165,11 @@ for i in range(30): #Amount
     
 #input & game loop
 running = True
+
 while running:
     clock.tick(120)
-   
+    stamina -= 1
+    print(stamina)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = false
@@ -178,7 +180,11 @@ while running:
     #if event.type == pygame.MOUSEMOTION: #check if mouse moved
         #mousePos = event.pos #refreshes mouse position
         #print("mouse position: (",mousePos[0]," , ",mousePos[1], ")")
-    
+    if keys[pygame.K_SPACE]:
+        stamina -= 10
+    if stamina == 0:
+        runnin = False
+        break
 #fisics
     move_player()
     
@@ -193,12 +199,13 @@ while running:
     screen.blit(background, (0, 0))
     #screen.blit(background, (900, 0))
 
+    screen.blit(train, (500, 900))
                                                     #X,     Y,   X,   Y
     pygame.draw.rect(screen, (25, 14, 10), (-270 + offset, 550, 2200, 300), )
     
     for i in range(len(rainstorm)):
         rainstorm[i].draw()
-        
+    
     #for i in range(len(gunfire)):
         #gunfire[i].draw()
         
@@ -208,7 +215,6 @@ while running:
     draw_clouds()
     draw_platforms()
     pygame.draw.rect(screen, (random.randrange(60, 255), random.randrange(60, 255), random.randrange(60, 255)), (player[0], player[1], 50, 50))
-
 
     pygame.display.flip()
     
