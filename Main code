@@ -20,8 +20,14 @@ stamina = 600
 xPositions = []
 yPositions = []
 
+shoot = True
+
 #         #x   #y  #xv #yv
 player = [100, 500, 0, 0]
+
+
+
+
 isOnGround = False
 offset = 0
 platforms = [(500, 400), (700, 300)]
@@ -113,7 +119,7 @@ class Gunfire:
         self.xpos += random.randrange(-1, 2) # Left & Right #1050
         self.ypos -= random.randrange(-24, 0) #Up & Down #350
         if self.ypos > 500:
-            self.ypos = random.randrange(350, 351) #reset bullets
+            self.ypos = random.randrange(350, 351) #reset hitboxs
     def draw(self):
         pygame.draw.rect(screen, (255, random.randrange(165, 240), 0), (self.xpos, self.ypos, 2, 35))
         pygame.draw.circle(screen, (255, 234, 0), (self.xpos + 1, self.ypos + 35), 3)
@@ -138,25 +144,38 @@ class Prismatic:
 #___________________________________________________________________________________________________________
 class Recharge:
     def __init__(self, xpos, ypos):
-        self.xpos = xpos
-        self.ypos = ypos
+        self.xpos = xpos + 300 #Xposition
+        self.ypos = ypos + 265 #Yposition
         self.isAlive = True
-    def collide(self, player, offset):
+        
+    def collide(self, offset):
+        global stamina
         if self.isAlive:
-            if player[0] + offset > self.xpos:
-                if player[0] + offset < self.xpos + 40:
-                    if player[1] + offset < self.ypos + 40:
-                        if player[1] + offset > self.ypos:
-                            print("RECHARGED!!")
-                            stamina += 200
-                            self.isAlive = False
-                            return False
+            if self.xpos<player[0]+20 and self.xpos+20>player[0] and self.ypos<player[1]+20 and self.ypos+20>player[1]:
+                print("RECHARGED!!")
+                stamina += 250
+                self.isAlive = False
+                
     def draw(self):
         if self.isAlive == True: #only draw alive aliens
             pygame.draw.rect(screen, (random.randrange(0, 250), random.randrange(0, 250), random.randrange(0, 250)), (self.xpos, self.ypos, 20, 20))
 #___________________________________________________________________________________________________________
 
-
+class Hitbox:
+    def __init__(self, xpos, ypos):
+        self.xpos = player[0]
+        self.ypos = player[1]
+        self.isAlive = False
+        
+    def move(self, xpos, ypos):
+        if self.isAlive == True:
+            self.xpos -= random.randrange(-1, 2) # Left & Right
+            self.ypos += random.randrange(-24, 0) #Up & Down
+            
+        if self.ypos < 0:
+            self.isAlive = False
+            self.ypos = ypos
+            self.xpos = xpos #reset hitboxs
 
 #___________________________________________________________________________________________________________
 
@@ -186,6 +205,7 @@ for i in range(30): #Amount
     
 #input & game loop
 running = True
+hitbox = Hitbox(player[0], player[1])
 
 while running:
     clock.tick(120)
@@ -204,7 +224,6 @@ while running:
     if keys[pygame.K_SPACE]:
         stamina -= 10
     if stamina == 0:
-        runnin = False
         break
 #fisics
     move_player()
@@ -217,6 +236,13 @@ while running:
         gunfire[i].move()
 
     A1 = Recharge(400, 900)
+
+
+    if shoot == True:
+        hitbox.isAlive = True
+     
+    for i in range(len(recharge)):
+        recharge[i].collide(offset)
 
 
 #Render
