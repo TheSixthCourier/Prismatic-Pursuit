@@ -209,7 +209,7 @@ hitbox = Hitbox(player[0], player[1])
 
 while running:
     clock.tick(120)
-    stamina -= .5
+    stamina -= 5
     print(stamina)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
